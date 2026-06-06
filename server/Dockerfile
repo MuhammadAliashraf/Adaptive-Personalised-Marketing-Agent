@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build && chmod +x entrypoint.sh
+RUN npm run build && sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
 
 EXPOSE 4000
 

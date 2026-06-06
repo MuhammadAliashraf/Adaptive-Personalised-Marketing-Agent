@@ -10,6 +10,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
   const [feedbackText, setFeedbackText] = useState('');
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState({}); // item.id -> boolean
+  const [batchLoading, setBatchLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Fetch campaign items when campaign changes
@@ -82,6 +83,31 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
     }
   };
 
+  const handleApproveAll = async () => {
+    const pendingItems = items.filter((item) => item.status === 'pending');
+    if (pendingItems.length === 0) return;
+
+    setBatchLoading(true);
+    setError('');
+    try {
+      const promises = pendingItems.map((item) => api.approveCampaignItem(item.id));
+      const updatedItems = await Promise.all(promises);
+      const updatedMap = new Map(updatedItems.map((item) => [item.id, item]));
+
+      setItems((prev) =>
+        prev.map((item) => {
+          const updated = updatedMap.get(item.id);
+          return updated ? { ...item, ...updated } : item;
+        })
+      );
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Failed to approve all items.');
+    } finally {
+      setBatchLoading(false);
+    }
+  };
+
   if (!campaign) {
     return (
       <Card className="h-full flex flex-col items-center justify-center py-20 text-center">
@@ -108,16 +134,28 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
     <Card className="h-full flex flex-col">
       {/* Panel Header */}
       <CardHeader className="border-b border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/30">
-        <div className="flex items-center justify-between">
-          <div className="min-w-0">
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1">
             <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest">
               Active Review Queue
             </span>
             <CardTitle className="text-base truncate mt-0.5">{campaign.name}</CardTitle>
           </div>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/20 text-teal-700 dark:text-teal-400 border border-teal-200/50">
-            {items.length} ads generated
-          </span>
+          <div className="flex items-center gap-3 shrink-0">
+            {items.filter((item) => item.status === 'pending').length > 0 && (
+              <Button
+                variant="success"
+                size="sm"
+                onClick={handleApproveAll}
+                isLoading={batchLoading}
+              >
+                Approve All ({items.filter((item) => item.status === 'pending').length})
+              </Button>
+            )}
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/20 text-teal-700 dark:text-teal-400 border border-teal-200/50">
+              {items.length} ads generated
+            </span>
+          </div>
         </div>
       </CardHeader>
 

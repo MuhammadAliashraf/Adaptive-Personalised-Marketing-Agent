@@ -172,11 +172,10 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                   <button
                     key={tier}
                     onClick={() => handleTierFilter(tier)}
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-150 border cursor-pointer ${
-                      filterTier === tier
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
-                        : 'bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
-                    }`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-150 border cursor-pointer ${filterTier === tier
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+                      : 'bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
+                      }`}
                   >
                     {tier.toUpperCase()}
                   </button>
@@ -190,11 +189,10 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                   <button
                     key={channel}
                     onClick={() => handleChannelFilter(channel)}
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-150 border cursor-pointer ${
-                      filterChannel === channel
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
-                        : 'bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
-                    }`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-150 border cursor-pointer ${filterChannel === channel
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+                      : 'bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
+                      }`}
                   >
                     {channel.toUpperCase()}
                   </button>
@@ -265,7 +263,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                         variant={
                           user.loyaltyTier === 'vip' ? 'warning'
                             : user.loyaltyTier === 'regular' ? 'success'
-                            : 'secondary'
+                              : 'secondary'
                         }
                       />
                       <span className="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
