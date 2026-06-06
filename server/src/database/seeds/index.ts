@@ -1,23 +1,18 @@
 import 'reflect-metadata';
 import { AppDataSource } from '@config/data-source';
 import { logger } from '@common/utils/logger';
-import { seedBrand } from './brand.seed';
-import { seedStrategies } from './strategy.seed';
-import { seedMarketer } from './marketer.seed';
-import { seedUsers } from './user.seed';
+import { seedAll } from './seed-all';
 
 /**
  * Idempotent seed runner — each seeder no-ops if its table already has data.
- * Run with `npm run seed`.
+ * Run with `npm run seed`. The seeding logic itself lives in `seedAll` so it
+ * can be reused by the Seed migration.
  */
 async function run(): Promise<void> {
   await AppDataSource.initialize();
   logger.info('🌱 Seeding database…');
 
-  await seedMarketer(AppDataSource);
-  await seedBrand(AppDataSource);
-  await seedStrategies(AppDataSource);
-  await seedUsers(AppDataSource);
+  await seedAll(AppDataSource.manager);
 
   logger.info('✅ Seeding complete');
   await AppDataSource.destroy();

@@ -1,8 +1,8 @@
-import { DataSource } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Brand } from '@modules/brand/brand.entity';
 
-export async function seedBrand(ds: DataSource): Promise<Brand> {
-  const repo = ds.getRepository(Brand);
+export async function seedBrand(manager: EntityManager): Promise<Brand> {
+  const repo = manager.getRepository(Brand);
   const existing = await repo.findOne({ where: { isDefault: true } });
   if (existing) return existing;
 

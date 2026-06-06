@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Channel } from '@common/enums';
 import { Strategy } from '@modules/strategies/strategy.entity';
 
@@ -77,8 +77,8 @@ const STRATEGIES: Partial<Strategy>[] = [
   },
 ];
 
-export async function seedStrategies(ds: DataSource): Promise<void> {
-  const repo = ds.getRepository(Strategy);
+export async function seedStrategies(manager: EntityManager): Promise<void> {
+  const repo = manager.getRepository(Strategy);
   if ((await repo.count()) > 0) return;
   await repo.save(repo.create(STRATEGIES));
 }

@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Channel, LoyaltyTier } from '@common/enums';
 import { User } from '@modules/users/user.entity';
 
@@ -20,8 +20,8 @@ const num = (min: number, max: number): number => Math.floor(Math.random() * (ma
 const daysAgo = (d: number): Date => new Date(Date.now() - d * 86_400_000);
 
 /** Generates 50–100 randomised but realistic customer profiles. */
-export async function seedUsers(ds: DataSource, count = 60): Promise<void> {
-  const repo = ds.getRepository(User);
+export async function seedUsers(manager: EntityManager, count = 60): Promise<void> {
+  const repo = manager.getRepository(User);
   if ((await repo.count()) > 0) return;
 
   const users: Partial<User>[] = [];
