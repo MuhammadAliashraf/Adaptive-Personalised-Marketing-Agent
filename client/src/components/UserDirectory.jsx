@@ -13,6 +13,8 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
   const [search, setSearch] = useState('');
   const [filterTier, setFilterTier] = useState('All');
   const [filterChannel, setFilterChannel] = useState('All');
+  const [filterCity, setFilterCity] = useState('All');
+  const [filterCountry, setFilterCountry] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
 
   // Selection state
@@ -28,7 +30,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
     }, 250);
 
     return () => clearTimeout(handler);
-  }, [search, filterTier, filterChannel, currentPage]);
+  }, [search, filterTier, filterChannel, filterCity, filterCountry, currentPage]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -40,6 +42,8 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
         search: search.trim() || undefined,
         tier: filterTier === 'All' ? undefined : filterTier,
         preferredChannel: filterChannel === 'All' ? undefined : filterChannel,
+        city: filterCity === 'All' ? undefined : filterCity,
+        country: filterCountry === 'All' ? undefined : filterCountry,
       };
       const response = await api.getUsers(params);
       if (response.success) {
@@ -72,6 +76,15 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
 
   const handleChannelFilter = (channel) => {
     setFilterChannel(channel);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSearch('');
+    setFilterTier('All');
+    setFilterChannel('All');
+    setFilterCity('All');
+    setFilterCountry('All');
     setCurrentPage(1);
   };
 
@@ -133,6 +146,13 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
   const isAllSelectedOnPage =
     users.length > 0 && users.every((u) => selectedUserIds.includes(u.id));
 
+  const hasActiveFilters =
+    search.trim() !== '' ||
+    filterTier !== 'All' ||
+    filterChannel !== 'All' ||
+    filterCity !== 'All' ||
+    filterCountry !== 'All';
+
   return (
     <div className="space-y-4">
       {/* Directory Card */}
@@ -149,18 +169,28 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
           </div>
 
           <div className="space-y-3 mt-1">
-            {/* Search */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={search}
-                onChange={handleSearchChange}
-                className="w-full pl-9 pr-4 py-2 border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 rounded-lg text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-              />
-              <svg className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            {/* Search + Clear Filters */}
+            <div className="flex gap-2">
+              <div className="relative flex-grow">
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={search}
+                  onChange={handleSearchChange}
+                  className="w-full pl-9 pr-4 py-2 border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 rounded-lg text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                />
+                <svg className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleClearFilters}
+                  className="px-3.5 py-2 text-xs font-semibold bg-green-100 dark:bg-stone-850 hover:bg-stone-200 dark:hover:bg-stone-750 text-stone-600 dark:text-stone-300 rounded-lg border border-stone-250 dark:border-stone-700 transition-all cursor-pointer shrink-0"
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
 
             {/* Filter Rows */}
@@ -197,6 +227,47 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                     {channel.toUpperCase()}
                   </button>
                 ))}
+              </div>
+
+              {/* Location Filters */}
+              <div className="flex flex-wrap gap-4 items-center pt-2 border-t border-stone-100 dark:border-stone-850">
+                {/* City Filter */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">City:</span>
+                  <select
+                    value={filterCity}
+                    onChange={(e) => {
+                      setFilterCity(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="px-2 py-1 bg-white dark:bg-stone-900 text-xs text-stone-700 dark:text-stone-350 border border-stone-250 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                  >
+                    {['All', 'Karachi', 'London', 'Toronto', 'Berlin', 'Dubai', 'Austin'].map((city) => (
+                      <option key={city} value={city} className="bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-100">
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Country Filter */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Country:</span>
+                  <select
+                    value={filterCountry}
+                    onChange={(e) => {
+                      setFilterCountry(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="px-2 py-1 bg-white dark:bg-stone-900 text-xs text-stone-700 dark:text-stone-350 border border-stone-250 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                  >
+                    {['All', 'Pakistan', 'UK', 'Canada', 'Germany', 'UAE', 'USA'].map((country) => (
+                      <option key={country} value={country} className="bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-100">
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
