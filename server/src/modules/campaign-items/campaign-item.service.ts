@@ -1,9 +1,11 @@
 import { BadRequestError, NotFoundError } from '@common/errors';
 import { CampaignItemStatus } from '@common/enums';
+import { logger } from '@common/utils/logger';
 import { brandService } from '@modules/brand/brand.service';
 import { strategyService } from '@modules/strategies/strategy.service';
 import { userService } from '@modules/users/user.service';
 import { generationService } from '@modules/campaigns/generation.service';
+import { sendCampaignEmail } from '@/services/email.service';
 import { CampaignItem } from './campaign-item.entity';
 import { campaignItemRepository } from './campaign-item.repository';
 import { RejectItemInput } from './campaign-item.schema';
@@ -27,7 +29,7 @@ class CampaignItemService {
     return item;
   }
 
-  /** Marketer approves an item → queued for delivery to the storefront. */
+  /** Marketer approves an item → queued for delivery to the storefront + email sent. */
   async approve(id: string): Promise<CampaignItem> {
     const item = await this.getById(id);
     if (item.status === CampaignItemStatus.APPROVED) {
@@ -37,7 +39,18 @@ class CampaignItemService {
       throw new BadRequestError(`Cannot approve an item in '${item.status}' state`);
     }
     item.status = CampaignItemStatus.APPROVED;
-    return campaignItemRepository.save(item);
+    const saved = await campaignItemRepository.save(item);
+
+    if (item.content?.email) {
+      const user = await userService.getById(item.userId);
+      const { subject, preheader, body, ctaText, ctaUrl } = item.content.email;
+      const htmlBody = buildEmailHtml({ preheader, body, ctaText, ctaUrl });
+      sendCampaignEmail(user.email, subject, htmlBody).catch((err: Error) =>
+        logger.warn('Campaign email delivery failed', { itemId: item.id, error: err.message }),
+      );
+    }
+
+    return saved;
   }
 
   /**
@@ -90,3 +103,30 @@ class CampaignItemService {
 }
 
 export const campaignItemService = new CampaignItemService();
+
+function buildEmailHtml(opts: {
+  preheader?: string;
+  body: string;
+  ctaText: string;
+  ctaUrl: string;
+}): string {
+  const bodyHtml = opts.body
+    .split('\n')
+    .map((line) => (line.trim() ? `<p>${line}</p>` : ''))
+    .join('');
+
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8" /></head>
+<body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#222">
+  ${opts.preheader ? `<p style="color:#888;font-size:13px">${opts.preheader}</p>` : ''}
+  ${bodyHtml}
+  <p style="margin-top:32px">
+    <a href="${opts.ctaUrl}"
+       style="background:#111;color:#fff;padding:12px 24px;border-radius:4px;text-decoration:none;font-weight:600">
+      ${opts.ctaText}
+    </a>
+  </p>
+</body>
+</html>`;
+}
