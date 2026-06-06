@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { validate } from '@common/middlewares/validate.middleware';
 import { authController } from './auth.controller';
 import { loginSchema, refreshSchema, registerSchema } from './auth.schema';
@@ -93,6 +92,6 @@ router.post('/refresh', validate(refreshSchema), authController.refresh);
  *       200: { description: Current marketer }
  *       401: { description: Unauthorized }
  */
-router.get('/me', authenticate, authController.me);
+router.get('/me', authController.me);
 
 export const authRoutes = router;

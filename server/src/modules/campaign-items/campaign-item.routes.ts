@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { validate } from '@common/middlewares/validate.middleware';
 import { campaignItemController } from './campaign-item.controller';
 import {
@@ -28,7 +27,7 @@ const router = Router();
  *     responses:
  *       200: { description: Campaign items }
  */
-router.get('/', authenticate, validate(listItemsSchema), campaignItemController.list);
+router.get('/', validate(listItemsSchema), campaignItemController.list);
 
 /**
  * @openapi
@@ -41,7 +40,7 @@ router.get('/', authenticate, validate(listItemsSchema), campaignItemController.
  *     responses:
  *       200: { description: Campaign item }
  */
-router.get('/:id', authenticate, validate(itemIdParamSchema), campaignItemController.getById);
+router.get('/:id', validate(itemIdParamSchema), campaignItemController.getById);
 
 /**
  * @openapi
@@ -54,12 +53,7 @@ router.get('/:id', authenticate, validate(itemIdParamSchema), campaignItemContro
  *     responses:
  *       200: { description: Item approved }
  */
-router.post(
-  '/:id/approve',
-  authenticate,
-  validate(itemIdParamSchema),
-  campaignItemController.approve,
-);
+router.post('/:id/approve', validate(itemIdParamSchema), campaignItemController.approve);
 
 /**
  * @openapi
@@ -81,7 +75,7 @@ router.post(
  *     responses:
  *       200: { description: Item rejected and a regenerated item returned }
  */
-router.post('/:id/reject', authenticate, validate(rejectItemSchema), campaignItemController.reject);
+router.post('/:id/reject', validate(rejectItemSchema), campaignItemController.reject);
 
 export const campaignItemRoutes = router;
 

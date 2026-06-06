@@ -5,7 +5,7 @@ import { campaignService } from './campaign.service';
 
 export const campaignController = {
   create: asyncHandler(async (req: Request, res: Response) => {
-    const campaign = await campaignService.create(req.user!.sub, req.body);
+    const campaign = await campaignService.create(req.body);
     return ApiResponse.created(res, campaign, 'Campaign created & items generated');
   }),
 

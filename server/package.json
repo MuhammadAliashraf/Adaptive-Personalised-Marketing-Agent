@@ -8,6 +8,7 @@
     "dev": "nodemon",
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/server.js",
+    "start:dev": "nodemon server.js",
     "typeorm": "tsx ./node_modules/typeorm/cli.js -d src/config/data-source.ts",
     "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/Migration",
     "migration:create": "tsx ./node_modules/typeorm/cli.js migration:create src/database/migrations/Migration",

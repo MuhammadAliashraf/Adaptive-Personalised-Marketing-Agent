@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { validate } from '@common/middlewares/validate.middleware';
 import { eventController } from './event.controller';
 import { createEventSchema } from './event.schema';
@@ -40,7 +39,7 @@ const router = Router();
 router
   .route('/')
   .post(validate(createEventSchema), eventController.create)
-  .get(authenticate, eventController.list);
+  .get(eventController.list);
 
 /**
  * @openapi
@@ -51,6 +50,6 @@ router
  *     responses:
  *       200: { description: Strategy performance }
  */
-router.get('/performance', authenticate, eventController.performance);
+router.get('/performance', eventController.performance);
 
 export const eventRoutes = router;

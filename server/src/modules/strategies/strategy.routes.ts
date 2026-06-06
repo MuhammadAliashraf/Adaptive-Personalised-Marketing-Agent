@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { strategyController } from './strategy.controller';
 
 const router = Router();
@@ -19,7 +18,7 @@ const router = Router();
  *     responses:
  *       200: { description: Strategies }
  */
-router.get('/', authenticate, strategyController.list);
+router.get('/', strategyController.list);
 
 /**
  * @openapi
@@ -33,6 +32,6 @@ router.get('/', authenticate, strategyController.list);
  *       200: { description: Strategy }
  *       404: { description: Not found }
  */
-router.get('/:id', authenticate, strategyController.getById);
+router.get('/:id', strategyController.getById);
 
 export const strategyRoutes = router;

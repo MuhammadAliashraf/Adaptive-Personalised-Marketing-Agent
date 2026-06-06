@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { validate } from '@common/middlewares/validate.middleware';
 import { userController } from './user.controller';
 import { listUsersSchema, userIdParamSchema } from './user.schema';
@@ -34,7 +33,7 @@ const router = Router();
  *     responses:
  *       200: { description: Paginated list of users }
  */
-router.get('/', authenticate, validate(listUsersSchema), userController.list);
+router.get('/', validate(listUsersSchema), userController.list);
 
 /**
  * @openapi
@@ -48,6 +47,6 @@ router.get('/', authenticate, validate(listUsersSchema), userController.list);
  *       200: { description: User }
  *       404: { description: Not found }
  */
-router.get('/:id', authenticate, validate(userIdParamSchema), userController.getById);
+router.get('/:id', validate(userIdParamSchema), userController.getById);
 
 export const userRoutes = router;

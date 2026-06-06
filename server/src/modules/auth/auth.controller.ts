@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { UnauthorizedError } from '@common/errors';
 import { ApiResponse } from '@common/utils/ApiResponse';
 import { asyncHandler } from '@common/utils/asyncHandler';
 import { authService } from './auth.service';
@@ -20,7 +21,8 @@ export const authController = {
   }),
 
   me: asyncHandler(async (req: Request, res: Response) => {
-    const profile = await authService.getProfile(req.user!.sub);
+    if (!req.user) throw new UnauthorizedError('Not authenticated');
+    const profile = await authService.getProfile(req.user.sub);
     return ApiResponse.ok(res, profile, 'Current marketer');
   }),
 };

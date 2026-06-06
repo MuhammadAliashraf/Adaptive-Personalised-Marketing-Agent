@@ -15,7 +15,7 @@ class CampaignService {
    * match a strategy, then generate brand-safe content. Items start as `pending`
    * (ready for marketer review).
    */
-  async create(marketerId: string, input: CreateCampaignInput): Promise<Campaign> {
+  async create(input: CreateCampaignInput): Promise<Campaign> {
     const [users, strategies, brand] = await Promise.all([
       userService.getManyOrFail(input.userIds),
       strategyRepository.findAll(true),
@@ -28,7 +28,7 @@ class CampaignService {
 
     const campaign = campaignRepository.create({
       name: input.name,
-      marketerId,
+      marketerId: null,
       status: CampaignStatus.ACTIVE,
       items: [],
     });

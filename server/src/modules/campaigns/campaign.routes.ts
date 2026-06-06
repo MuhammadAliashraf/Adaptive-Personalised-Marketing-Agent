@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { validate } from '@common/middlewares/validate.middleware';
 import { campaignController } from './campaign.controller';
 import { campaignIdParamSchema, createCampaignSchema } from './campaign.schema';
@@ -45,8 +44,8 @@ const router = Router();
  */
 router
   .route('/')
-  .post(authenticate, validate(createCampaignSchema), campaignController.create)
-  .get(authenticate, campaignController.list);
+  .post(validate(createCampaignSchema), campaignController.create)
+  .get(campaignController.list);
 
 /**
  * @openapi
@@ -60,6 +59,6 @@ router
  *       200: { description: Campaign with items }
  *       404: { description: Not found }
  */
-router.get('/:id', authenticate, validate(campaignIdParamSchema), campaignController.getById);
+router.get('/:id', validate(campaignIdParamSchema), campaignController.getById);
 
 export const campaignRoutes = router;

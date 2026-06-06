@@ -23,8 +23,8 @@ export class Campaign {
   name: string;
 
   @Index()
-  @Column({ type: 'uuid' })
-  marketerId: string;
+  @Column({ type: 'uuid', nullable: true })
+  marketerId: string | null;
 
   @ManyToOne(() => Marketer, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'marketerId' })

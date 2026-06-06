@@ -31,7 +31,7 @@ const envSchema = z.object({
 
   // AI
   GEMINI_API_KEY: z.string().optional().default(''),
-  GEMINI_MODEL: z.string().default('gemini-1.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
   GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
   // Postmark
   POSTMARK_SERVER_TOKEN: z

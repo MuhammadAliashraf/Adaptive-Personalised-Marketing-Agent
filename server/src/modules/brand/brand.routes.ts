@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { authenticate } from '@common/middlewares/auth.middleware';
 import { brandController } from './brand.controller';
 
 const router = Router();
@@ -17,7 +16,7 @@ const router = Router();
  *     responses:
  *       200: { description: Brand }
  */
-router.get('/', authenticate, brandController.getDefault);
+router.get('/', brandController.getDefault);
 
 /**
  * @openapi
@@ -28,7 +27,7 @@ router.get('/', authenticate, brandController.getDefault);
  *     responses:
  *       200: { description: Brands }
  */
-router.get('/all', authenticate, brandController.list);
+router.get('/all', brandController.list);
 
 /**
  * @openapi
@@ -42,6 +41,6 @@ router.get('/all', authenticate, brandController.list);
  *       200: { description: Brand }
  *       404: { description: Not found }
  */
-router.get('/:id', authenticate, brandController.getById);
+router.get('/:id', brandController.getById);
 
 export const brandRoutes = router;
