@@ -31,8 +31,21 @@ const envSchema = z.object({
 
   // AI
   GEMINI_API_KEY: z.string().optional().default(''),
+<<<<<<< Updated upstream
   GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
   GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
+=======
+  GEMINI_MODEL: z.string().default('gemini-1.5-flash'),
+
+  // Postmark
+  POSTMARK_SERVER_TOKEN: z
+    .string()
+    .min(1, 'POSTMARK_SERVER_TOKEN must be set'),
+
+  POSTMARK_FROM_EMAIL: z
+    .string()
+    .email('POSTMARK_FROM_EMAIL must be a valid email'),
+>>>>>>> Stashed changes
 });
 
 const parsed = envSchema.safeParse(process.env);
