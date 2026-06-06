@@ -1,10 +1,11 @@
-import { env } from '@config/env';
+import { Type, type Schema } from '@google/genai';
 import { logger } from '@common/utils/logger';
 import { LoyaltyTier } from '@common/enums';
 import { Brand } from '@modules/brand/brand.entity';
 import { Strategy } from '@modules/strategies/strategy.entity';
 import { User } from '@modules/users/user.entity';
 import { GeneratedContent } from '@modules/campaign-items/campaign-item.entity';
+import { geminiEnabled, generateJson } from './gemini.client';
 
 export interface StrategyMatch {
   strategyId: string;
@@ -12,21 +13,23 @@ export interface StrategyMatch {
 }
 
 /**
- * AI generation boundary. Today it ships a deterministic rules-based matcher and
- * a templated content generator so the whole flow runs without external calls.
- * Swap the bodies of `callGeminiMatch` / `callGeminiContent` to wire Gemini —
- * the rest of the app depends only on this interface.
+ * AI generation boundary. When a Gemini API key is configured it picks the best
+ * strategy per user and generates brand-safe content via the model; otherwise
+ * (or on any error/timeout) it falls back to a deterministic rules-based matcher
+ * and a templated generator so the whole flow always runs. The rest of the app
+ * depends only on this interface.
  */
 class GenerationService {
-  private get geminiEnabled(): boolean {
-    return Boolean(env.GEMINI_API_KEY);
-  }
-
   /** Picks the best strategy for a user from the available library. */
   async matchStrategy(user: User, strategies: Strategy[]): Promise<StrategyMatch> {
-    if (this.geminiEnabled) {
-      // TODO: replace with a real Gemini structured-output call.
-      logger.debug('Gemini matching not yet wired; using rules-based matcher');
+    if (geminiEnabled()) {
+      try {
+        return await this.geminiMatch(user, strategies);
+      } catch (error) {
+        logger.warn('Gemini strategy match failed; falling back to rules', {
+          error: (error as Error).message,
+        });
+      }
     }
     return this.rulesBasedMatch(user, strategies);
   }
@@ -38,12 +41,177 @@ class GenerationService {
     brand: Brand,
     feedback?: string | null,
   ): Promise<GeneratedContent> {
-    if (this.geminiEnabled) {
-      // TODO: replace with a real Gemini structured-output call honouring
-      // brand.tone, brand.approvedThemes and brand.restrictedKeywords.
-      logger.debug('Gemini content generation not yet wired; using templated generator');
+    if (geminiEnabled()) {
+      try {
+        return await this.geminiContent(user, strategy, brand, feedback);
+      } catch (error) {
+        logger.warn('Gemini content generation failed; falling back to template', {
+          error: (error as Error).message,
+        });
+      }
     }
     return this.templatedContent(user, strategy, brand, feedback);
+  }
+
+  // ── Gemini-backed implementations ─────────────────────────
+
+  private async geminiMatch(user: User, strategies: Strategy[]): Promise<StrategyMatch> {
+    const ids = strategies.map((s) => s.id);
+    const schema: Schema = {
+      type: Type.OBJECT,
+      properties: {
+        strategyId: { type: Type.STRING, enum: ids },
+        rationale: { type: Type.STRING },
+      },
+      required: ['strategyId', 'rationale'],
+    };
+
+    const system =
+      'You are a marketing strategist. Given one customer profile and a library of ' +
+      'marketing strategies, choose the single strategy most likely to convert this ' +
+      'customer. Respond ONLY with JSON matching the schema. The strategyId MUST be ' +
+      'one of the provided ids. The rationale is one or two sentences explaining the ' +
+      'choice in terms of this customer’s data.';
+
+    const prompt =
+      `Customer profile:\n${JSON.stringify(this.userSummary(user), null, 2)}\n\n` +
+      `Available strategies:\n${JSON.stringify(
+        strategies.map((s) => ({
+          id: s.id,
+          name: s.name,
+          description: s.description,
+          targetCriteria: s.targetCriteria,
+          offerType: s.offerType,
+        })),
+        null,
+        2,
+      )}`;
+
+    const result = await generateJson<StrategyMatch>({ system, prompt, schema });
+
+    if (!result.strategyId || !ids.includes(result.strategyId)) {
+      throw new Error(`Gemini returned an unknown strategyId: ${result.strategyId}`);
+    }
+    return { strategyId: result.strategyId, rationale: result.rationale ?? '' };
+  }
+
+  private async geminiContent(
+    user: User,
+    strategy: Strategy,
+    brand: Brand,
+    feedback?: string | null,
+  ): Promise<GeneratedContent> {
+    const schema: Schema = {
+      type: Type.OBJECT,
+      properties: {
+        email: {
+          type: Type.OBJECT,
+          properties: {
+            subject: { type: Type.STRING },
+            preheader: { type: Type.STRING },
+            body: { type: Type.STRING },
+            ctaText: { type: Type.STRING },
+            ctaUrl: { type: Type.STRING },
+          },
+          required: ['subject', 'preheader', 'body', 'ctaText', 'ctaUrl'],
+        },
+        notification: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            message: { type: Type.STRING },
+            icon: { type: Type.STRING },
+          },
+          required: ['title', 'message'],
+        },
+        modal: {
+          type: Type.OBJECT,
+          properties: {
+            headline: { type: Type.STRING },
+            body: { type: Type.STRING },
+            imageUrl: { type: Type.STRING },
+            ctaText: { type: Type.STRING },
+            ctaUrl: { type: Type.STRING },
+            dismissText: { type: Type.STRING },
+          },
+          required: ['headline', 'body', 'ctaText', 'ctaUrl', 'dismissText'],
+        },
+      },
+      required: ['email', 'notification', 'modal'],
+    };
+
+    const restricted = brand.restrictedKeywords?.length
+      ? brand.restrictedKeywords.join(', ')
+      : '(none)';
+    const themes = brand.approvedThemes?.length ? brand.approvedThemes.join(', ') : '(any)';
+    const valueProps = brand.valueProps?.length ? brand.valueProps.join('; ') : '(none)';
+
+    const system =
+      `You are a senior copywriter for the brand "${brand.name}". Write personalised, ` +
+      'on-brand marketing content as three channels (email, in-app notification, modal ' +
+      'popup). Hard rules:\n' +
+      `- Brand voice: ${brand.voice ?? 'n/a'}. Tone: ${strategy.tone ?? brand.tone ?? 'friendly'}.\n` +
+      `- Stay within these approved themes: ${themes}.\n` +
+      `- NEVER use any of these restricted words/claims: ${restricted}.\n` +
+      `- Brand value props to draw on: ${valueProps}.\n` +
+      `- Target audience: ${brand.targetAudience ?? 'general'}.\n` +
+      '- Keep the email body concise (a few short paragraphs), the notification under ~120 ' +
+      'characters, and the modal punchy. Respond ONLY with JSON matching the schema.';
+
+    const ctaUrl = 'https://storefront.example.com';
+    const revision = feedback
+      ? `\n\nIMPORTANT — the previous version was REJECTED by a human reviewer. Revise the ` +
+        `content to address this feedback: "${feedback}"`
+      : '';
+
+    const prompt =
+      `Generate content for this customer using the matched strategy.\n\n` +
+      `Matched strategy:\n${JSON.stringify(
+        {
+          name: strategy.name,
+          description: strategy.description,
+          tone: strategy.tone,
+          offerType: strategy.offerType,
+          exampleCTA: strategy.exampleCTA,
+          recommendedChannel: strategy.recommendedChannel,
+        },
+        null,
+        2,
+      )}\n\n` +
+      `Customer profile:\n${JSON.stringify(this.userSummary(user), null, 2)}\n\n` +
+      `Use this URL for every ctaUrl: ${ctaUrl}.${revision}`;
+
+    const content = await generateJson<GeneratedContent>({ system, prompt, schema });
+
+    if (!content.email?.subject || !content.notification?.title || !content.modal?.headline) {
+      throw new Error('Gemini returned content missing required fields');
+    }
+    return content;
+  }
+
+  /** Compact, prompt-friendly view of the fields that drive marketing decisions. */
+  private userSummary(user: User): Record<string, unknown> {
+    const now = Date.now();
+    const daysSinceActive = user.lastActiveAt
+      ? Math.round((now - new Date(user.lastActiveAt).getTime()) / 86_400_000)
+      : null;
+    return {
+      firstName: user.name.split(' ')[0],
+      age: user.age,
+      city: user.city,
+      country: user.country,
+      language: user.language,
+      loyaltyTier: user.loyaltyTier,
+      totalOrders: user.totalOrders,
+      totalSpend: Number(user.totalSpend),
+      avgOrderValue: Number(user.avgOrderValue),
+      abandonedCarts: user.abandonedCarts,
+      daysSinceActive,
+      favoriteCategories: user.favoriteCategories,
+      preferredChannel: user.preferredChannel,
+      emailOpenRate: user.emailOpenRate,
+      clickThroughRate: user.clickThroughRate,
+    };
   }
 
   // ── Deterministic fallbacks ───────────────────────────────

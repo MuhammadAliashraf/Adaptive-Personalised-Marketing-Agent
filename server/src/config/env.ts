@@ -31,7 +31,8 @@ const envSchema = z.object({
 
   // AI
   GEMINI_API_KEY: z.string().optional().default(''),
-  GEMINI_MODEL: z.string().default('gemini-1.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
+  GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
 });
 
 const parsed = envSchema.safeParse(process.env);
