@@ -13,15 +13,17 @@ export default function Button({
   type = 'button',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles =
+    'inline-flex items-center justify-center font-semibold tracking-tight transition-all duration-150 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
 
   const variants = {
-    primary: 'bg-violet-600 hover:bg-violet-700 text-white shadow-sm focus:ring-violet-500',
-    secondary: 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-200 focus:ring-zinc-500',
-    outline: 'border border-zinc-300 hover:bg-zinc-50 text-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-800 dark:text-zinc-300 focus:ring-zinc-500',
-    ghost: 'hover:bg-zinc-100 text-zinc-700 dark:hover:bg-zinc-800 dark:text-zinc-300 focus:ring-zinc-500',
-    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm focus:ring-red-500',
-    success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm focus:ring-emerald-500',
+    primary:   'bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-sm focus:ring-teal-500',
+    secondary: 'bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-800 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 focus:ring-stone-400',
+    outline:   'border border-stone-300 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-800/60 text-stone-700 dark:text-stone-300 focus:ring-stone-400',
+    ghost:     'hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 focus:ring-stone-400',
+    danger:    'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white shadow-sm focus:ring-rose-500',
+    success:   'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white shadow-sm focus:ring-emerald-500',
+    warning:   'bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white shadow-sm focus:ring-amber-400',
   };
 
   const sizes = {
@@ -45,14 +47,7 @@ export default function Button({
           fill="none"
           viewBox="0 0 24 24"
         >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path
             className="opacity-75"
             fill="currentColor"
@@ -60,9 +55,9 @@ export default function Button({
           />
         </svg>
       )}
-      {!isLoading && startIcon && <span className="inline-flex">{startIcon}</span>}
+      {!isLoading && startIcon && <span className="inline-flex shrink-0">{startIcon}</span>}
       <span>{children}</span>
-      {!isLoading && endIcon && <span className="inline-flex">{endIcon}</span>}
+      {!isLoading && endIcon && <span className="inline-flex shrink-0">{endIcon}</span>}
     </button>
   );
 }

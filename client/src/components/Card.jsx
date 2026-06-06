@@ -2,12 +2,12 @@ import React from 'react';
 
 export function Card({ children, className = '', hoverEffect = false, ...props }) {
   const hoverClass = hoverEffect
-    ? 'hover:scale-[1.01] hover:shadow-lg hover:border-violet-200 dark:hover:border-violet-900 transition-all duration-300'
-    : 'shadow-sm';
+    ? 'hover:shadow-md hover:border-teal-200 dark:hover:border-teal-800/50 transition-all duration-200 cursor-pointer'
+    : '';
 
   return (
     <div
-      className={`bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 rounded-xl overflow-hidden ${hoverClass} ${className}`}
+      className={`bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700/80 rounded-xl shadow-sm ${hoverClass} ${className}`}
       {...props}
     >
       {children}
@@ -17,7 +17,7 @@ export function Card({ children, className = '', hoverEffect = false, ...props }
 
 export function CardHeader({ children, className = '', ...props }) {
   return (
-    <div className={`p-5 pb-3 flex flex-col gap-1.5 ${className}`} {...props}>
+    <div className={`px-5 pt-5 pb-3 flex flex-col gap-1.5 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -26,7 +26,7 @@ export function CardHeader({ children, className = '', ...props }) {
 export function CardTitle({ children, className = '', ...props }) {
   return (
     <h3
-      className={`text-lg font-semibold text-zinc-900 dark:text-zinc-50 leading-none tracking-tight ${className}`}
+      className={`text-[15px] font-bold text-stone-900 dark:text-stone-50 leading-snug tracking-tight ${className}`}
       {...props}
     >
       {children}
@@ -36,10 +36,7 @@ export function CardTitle({ children, className = '', ...props }) {
 
 export function CardDescription({ children, className = '', ...props }) {
   return (
-    <p
-      className={`text-sm text-zinc-500 dark:text-zinc-400 ${className}`}
-      {...props}
-    >
+    <p className={`text-sm text-stone-500 dark:text-stone-400 leading-snug ${className}`} {...props}>
       {children}
     </p>
   );
@@ -47,7 +44,7 @@ export function CardDescription({ children, className = '', ...props }) {
 
 export function CardContent({ children, className = '', ...props }) {
   return (
-    <div className={`p-5 pt-0 text-sm text-zinc-700 dark:text-zinc-300 ${className}`} {...props}>
+    <div className={`px-5 pb-5 pt-0 text-sm text-stone-700 dark:text-stone-300 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -56,7 +53,7 @@ export function CardContent({ children, className = '', ...props }) {
 export function CardFooter({ children, className = '', ...props }) {
   return (
     <div
-      className={`p-5 pt-0 flex items-center border-t border-zinc-100 dark:border-zinc-800/50 mt-4 pt-4 ${className}`}
+      className={`px-5 py-4 flex items-center border-t border-stone-100 dark:border-stone-800 ${className}`}
       {...props}
     >
       {children}

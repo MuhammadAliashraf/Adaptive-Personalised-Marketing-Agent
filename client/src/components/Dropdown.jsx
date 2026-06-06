@@ -29,14 +29,14 @@ export default function Dropdown({
   };
 
   const alignmentClasses = {
-    left: 'left-0 origin-top-left',
+    left:  'left-0 origin-top-left',
     right: 'right-0 origin-top-right',
   };
 
   const buttonVariants = {
-    outline: 'border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300',
-    primary: 'bg-violet-600 hover:bg-violet-700 text-white shadow-sm',
-    ghost: 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300',
+    outline: 'border border-stone-300 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900',
+    primary: 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm',
+    ghost:   'hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400',
   };
 
   return (
@@ -44,11 +44,11 @@ export default function Dropdown({
       <button
         type="button"
         onClick={toggle}
-        className={`inline-flex items-center justify-between gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 ${buttonVariants[variant]}`}
+        className={`inline-flex items-center justify-between gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 ${buttonVariants[variant]}`}
       >
         <span>{label}</span>
         <svg
-          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 transition-transform duration-200 opacity-60 ${isOpen ? 'rotate-180' : ''}`}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -60,21 +60,21 @@ export default function Dropdown({
 
       {isOpen && (
         <div
-          className={`absolute mt-2 w-56 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-lg ring-1 ring-black/5 z-50 focus:outline-none animate-in fade-in slide-in-from-top-1 duration-150 ${alignmentClasses[align]}`}
+          className={`absolute mt-1.5 w-60 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 shadow-lg ring-1 ring-black/5 z-50 overflow-hidden ${alignmentClasses[align]}`}
         >
-          <div className="py-1" role="menu" aria-orientation="vertical">
+          <div className="py-1" role="menu">
             {items.map((item, index) => (
               <button
                 key={item.id || index}
                 onClick={() => handleItemClick(item)}
-                className="w-full text-left flex items-center px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                className="w-full text-left flex items-center px-4 py-2.5 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
                 role="menuitem"
               >
-                {item.icon && <span className="mr-2 text-zinc-400">{item.icon}</span>}
+                {item.icon && <span className="mr-3 text-stone-400 shrink-0">{item.icon}</span>}
                 <div className="flex flex-col">
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-semibold leading-snug">{item.label}</span>
                   {item.description && (
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500">{item.description}</span>
+                    <span className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">{item.description}</span>
                   )}
                 </div>
               </button>
