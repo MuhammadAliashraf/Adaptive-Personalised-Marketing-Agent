@@ -17,10 +17,6 @@ const envSchema = z.object({
   DB_USERNAME: z.string().default('postgres'),
   DB_PASSWORD: z.string().default('postgres'),
   DB_NAME: z.string().default('apma_dev'),
-  DB_SYNCHRONIZE: z
-    .enum(['true', 'false'])
-    .default('false')
-    .transform((v) => v === 'true'),
   DB_LOGGING: z
     .enum(['true', 'false'])
     .default('false')
