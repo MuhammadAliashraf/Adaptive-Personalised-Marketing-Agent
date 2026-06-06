@@ -186,9 +186,12 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
               {hasActiveFilters && (
                 <button
                   onClick={handleClearFilters}
-                  className="px-3.5 py-2 text-xs font-semibold bg-green-100 dark:bg-stone-850 hover:bg-stone-200 dark:hover:bg-stone-750 text-stone-600 dark:text-stone-300 rounded-lg border border-stone-250 dark:border-stone-700 transition-all cursor-pointer shrink-0"
+                  className="px-3 py-2 text-xs font-semibold bg-rose-50/50 hover:bg-rose-100/70 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 text-rose-600 dark:text-rose-450 rounded-lg border border-rose-200/50 dark:border-rose-900/50 transition-all duration-150 cursor-pointer shrink-0 flex items-center gap-1.5 active:scale-95 shadow-sm shadow-rose-500/5"
                 >
-                  Clear Filters
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Clear Filters</span>
                 </button>
               )}
             </div>
