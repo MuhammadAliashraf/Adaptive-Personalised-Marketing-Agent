@@ -66,7 +66,7 @@ export default function App() {
               <p className="text-[13px] font-black tracking-tight text-stone-900 dark:text-white uppercase leading-none">
                 Adaptive Agent
               </p>
-              <p className="text-[9px] font-semibold text-stone-400 tracking-widest uppercase mt-0.5">
+              <p className="text-[10px] font-semibold text-stone-400 tracking-widest uppercase mt-0.5">
                 Marketing Hub
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function App() {
                 <p className="text-xs font-bold text-stone-850 dark:text-stone-200 leading-none">
                   {marketer.name}
                 </p>
-                <p className="text-[9px] font-semibold text-stone-400 mt-0.5 leading-none">
+                <p className="text-[10px] font-semibold text-stone-400 mt-0.5 leading-none">
                   Marketer
                 </p>
               </div>

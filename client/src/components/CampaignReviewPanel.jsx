@@ -136,7 +136,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
       <CardHeader className="border-b border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/30">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest">
+            <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest">
               Active Review Queue
             </span>
             <CardTitle className="text-base truncate mt-0.5">{campaign.name}</CardTitle>
@@ -204,7 +204,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
                       <span className="text-[10px] text-rose-500 font-bold">✗</span>
                     )}
                     {item.regeneratedFromId && (
-                      <span className="text-[9px] opacity-75 font-bold uppercase px-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-500">
+                      <span className="text-[10px] opacity-75 font-bold uppercase px-1 rounded bg-stone-100 dark:bg-stone-800 text-stone-500">
                         Rev
                       </span>
                     )}
@@ -219,7 +219,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
                 {/* Rationale and Strategy */}
                 <div className="p-3 bg-stone-50 dark:bg-stone-900/50 rounded-xl border border-stone-200/50 dark:border-stone-800/80 text-xs leading-relaxed space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest">
+                    <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                       AI Strategy Matching Rationale
                     </span>
                     {activeItem.matchedStrategy && (
@@ -311,7 +311,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
                       <div className="w-full max-w-sm bg-gradient-to-br from-stone-900 to-teal-950 text-white border border-teal-800/40 rounded-xl p-5 shadow-lg space-y-4 overflow-hidden relative">
                         <div className="absolute -right-12 -top-12 w-28 h-28 rounded-full bg-teal-500/10 blur-xl" />
                         <div className="space-y-1.5 z-10 relative">
-                          <span className="text-[9px] bg-teal-550 border border-teal-400/40 px-2 py-0.5 rounded-full font-black uppercase tracking-wider inline-block">
+                          <span className="text-[10px] text-white bg-teal-600 border border-teal-500/60 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">
                             EXCLUSIVES
                           </span>
                           <h3 className="font-black text-sm tracking-tight text-white leading-snug">
@@ -373,7 +373,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
 
                       {/* Feedback Panel */}
                       <div className="bg-stone-50 dark:bg-stone-900/60 p-3 rounded-xl border border-stone-200 dark:border-stone-700 space-y-2.5">
-                        <p className="text-[9px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
+                        <p className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                           Reject with Custom Feedback (AI Refinement)
                         </p>
                         <div className="flex flex-wrap gap-1.5">
@@ -386,7 +386,7 @@ export default function CampaignReviewPanel({ campaign, onCampaignUpdated }) {
                             <button
                               key={preset}
                               onClick={() => handleRejectAndRegenerate(activeItem.id, preset)}
-                              className="px-2 py-0.5 bg-white dark:bg-stone-850 hover:bg-stone-100 dark:hover:bg-stone-750 text-[10px] font-semibold text-stone-600 dark:text-stone-300 rounded-full border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+                              className="px-2.5 py-1 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold text-stone-600 dark:text-stone-300 rounded-full border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
                             >
                               "{preset}"
                             </button>

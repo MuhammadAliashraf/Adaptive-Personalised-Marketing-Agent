@@ -1,6 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* Enable class-based dark mode toggling (required for Tailwind v4) */
+@variant dark (&:where(.dark, .dark *));
+
+/*
+  Tailwind v4 only ships the 11-stop standard scale (50,100-900,950).
+  Define the half-step values used throughout the UI via @theme.
+*/
+@theme {
+  /* Stone half-steps */
+  --color-stone-250: oklch(89.6% 0.004 52.54);
+  --color-stone-350: oklch(78.9% 0.008 56.313);
+  --color-stone-450: oklch(63.1% 0.012 57.165);
+  --color-stone-550: oklch(49.85% 0.012 65.855);
+  --color-stone-650: oklch(40.9% 0.011 70.6);
+  --color-stone-750: oklch(32.1% 0.009 50.928);
+  --color-stone-850: oklch(24.2% 0.007 45.171);
+
+  /* Teal half-steps */
+  --color-teal-150: oklch(93.15% 0.074 180.614);
+  --color-teal-450: oklch(74.05% 0.146 182.208);
+  --color-teal-550: oklch(65.2% 0.129 183.604);
+  --color-teal-650: oklch(55.55% 0.107 185.548);
+
+  /* Rose half-steps */
+  --color-rose-450: oklch(67.85% 0.22 14.934);
+}
+
 * {
   font-family: 'Inter', system-ui, sans-serif;
 }
@@ -8,4 +35,11 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure selects/inputs render properly in dark mode */
+@layer base {
+  select option {
+    background-color: inherit;
+  }
 }

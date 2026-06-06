@@ -200,7 +200,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
             <div className="flex flex-col gap-2">
               {/* Tier Filters */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Tier:</span>
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mr-1">Tier:</span>
                 {['All', 'new', 'regular', 'vip'].map((tier) => (
                   <button
                     key={tier}
@@ -217,7 +217,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
 
               {/* Channel Filters */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mr-1">Channel:</span>
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mr-1">Channel:</span>
                 {['All', 'email', 'push'].map((channel) => (
                   <button
                     key={channel}
@@ -236,7 +236,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
               <div className="flex flex-wrap gap-4 items-center pt-2 border-t border-stone-100 dark:border-stone-850">
                 {/* City Filter */}
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">City:</span>
+                  <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">City:</span>
                   <select
                     value={filterCity}
                     onChange={(e) => {
@@ -255,7 +255,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
 
                 {/* Country Filter */}
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Country:</span>
+                  <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">Country:</span>
                   <select
                     value={filterCountry}
                     onChange={(e) => {
@@ -340,7 +340,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                               : 'secondary'
                         }
                       />
-                      <span className="text-[10px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
+                      <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                         {user.preferredChannel}
                       </span>
                     </div>
@@ -443,7 +443,7 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
                 { label: 'Carts Aband.', value: selectedUser.abandonedCarts || 0, color: 'text-rose-500 dark:text-rose-400' },
               ].map((stat) => (
                 <div key={stat.label} className="bg-stone-50/80 dark:bg-stone-850 rounded-lg p-2 text-center border border-stone-100 dark:border-stone-800">
-                  <p className="text-[9px] font-bold text-stone-400 uppercase tracking-widest">{stat.label}</p>
+                  <p className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">{stat.label}</p>
                   <p className={`text-xs font-bold mt-0.5 ${stat.color}`}>{stat.value}</p>
                 </div>
               ))}
@@ -452,27 +452,27 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
             {/* Technical details list */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs border-t border-b border-stone-100 dark:border-stone-850 py-3">
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Total Spend:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Total Spend:</span>
                 <p className="font-semibold text-stone-800 dark:text-stone-200">${parseFloat(selectedUser.totalSpend || 0).toLocaleString()}</p>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Preferred Channel:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Preferred Channel:</span>
                 <p className="font-semibold text-stone-800 dark:text-stone-200 uppercase">{selectedUser.preferredChannel}</p>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Email Open Rate:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Email Open Rate:</span>
                 <p className="font-semibold text-stone-850 dark:text-stone-100">{((selectedUser.emailOpenRate || 0) * 100).toFixed(0)}%</p>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">CTR:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">CTR:</span>
                 <p className="font-semibold text-stone-850 dark:text-stone-100">{((selectedUser.clickThroughRate || 0) * 100).toFixed(0)}%</p>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Preferred Device:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Preferred Device:</span>
                 <p className="font-semibold text-stone-850 dark:text-stone-100 capitalize">{selectedUser.preferredDevice || 'N/A'}</p>
               </div>
               <div>
-                <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Last Active:</span>
+                <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Last Active:</span>
                 <p className="font-semibold text-stone-850 dark:text-stone-100">{formatDate(selectedUser.lastActiveAt)}</p>
               </div>
             </div>
@@ -482,10 +482,10 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
               {/* Recently viewed products */}
               {selectedUser.recentlyViewedProducts && selectedUser.recentlyViewedProducts.length > 0 && (
                 <div>
-                  <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">Recently Viewed</span>
+                  <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">Recently Viewed</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {selectedUser.recentlyViewedProducts.map((p, idx) => (
-                      <span key={idx} className="text-[10px] font-medium bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-700 dark:text-stone-300">
+                      <span key={idx} className="text-xs font-medium bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-stone-700 dark:text-stone-300">
                         {p}
                       </span>
                     ))}
@@ -496,10 +496,10 @@ export default function UserDirectory({ selectedUser, onSelectUser, onCampaignCr
               {/* Segment Tags */}
               {selectedUser.segmentTags && selectedUser.segmentTags.length > 0 && (
                 <div>
-                  <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider">AI Segment Tags</span>
+                  <span className="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">AI Segment Tags</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {selectedUser.segmentTags.map((tag, idx) => (
-                      <span key={idx} className="text-[10px] font-bold bg-teal-50 dark:bg-teal-950/20 text-teal-600 dark:text-teal-400 border border-teal-150 dark:border-teal-900 px-2 py-0.5 rounded-full">
+                      <span key={idx} className="text-xs font-semibold bg-teal-50 dark:bg-teal-950/20 text-teal-600 dark:text-teal-400 border border-teal-200 dark:border-teal-900 px-2 py-0.5 rounded-full">
                         {tag}
                       </span>
                     ))}
